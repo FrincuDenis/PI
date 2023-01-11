@@ -7,7 +7,7 @@ import sys
 import time
 def get_arguments():
     parser = optparse.OptionParser()
-    parser.add_option("-t","--target",dest="target",help="Target IP")
+    parser.add_option("-t","--target",dest="target",help="Target IP PC")
     parser.add_option("-s", "--source", dest="gateway", help="Gateway IP")
     (options,arguments)=parser.parse_args()
     return options

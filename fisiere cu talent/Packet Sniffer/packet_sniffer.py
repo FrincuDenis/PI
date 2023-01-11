@@ -14,11 +14,12 @@ def get_login(packet):
         for keyword in keywords:
             if keyword in load:
                 return load
+                print("\n\n[+] Possible Username/password >" + load + "\n\n")
                 break
 def process_packet(packet):
     if packet.haslayer(http.HTTPRequest):
         url=get_url(packet)
-        print("[+]HTTP REQUEST >> "+ URL)
+        print("[+]HTTP REQUEST >> "+ url)
         login_info=get_login(packet)
         if login_info:
             print("\n\n [+]Possible username & password : " + login_info + "\n\n")

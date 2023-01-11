@@ -47,7 +47,7 @@ class settings(QtWidgets.QWidget):
                 self.name_file = file
                 self.arg1 = "-t" + self.ipbox.text()
                 self.arg2="-p"+self.portbox.text()
-                subprocess.Popen(["python3", self.name_file, self.arg1,self.arg2])
+                subprocess.Popen(["python", self.name_file, self.arg1,self.arg2])
                 """"
             elif file=="arp_spoofer.py":
                 self.name_file = "./" + file
@@ -60,12 +60,15 @@ class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('meniuPI.ui', self)
-        self.arpspoof.clicked.connect(self.arpspoofer)
-        self.dnspoof.clicked.connect(self.dnspoofer)
-        self.mac.clicked.connect(self.macchanger)
-        self.netscanner.clicked.connect(self.netscann)
-        self.malware.clicked.connect(self.malware_listener)
-        self.packetsniffer.clicked.connect(self.packetsniff)
+        try:
+            self.arpspoof.clicked.connect(self.arpspoofer)
+            self.dnspoof.clicked.connect(self.dnspoofer)
+            self.mac.clicked.connect(self.macchanger)
+            self.netscanner.clicked.connect(self.netscann)
+            self.malware.clicked.connect(self.malware_listener)
+            self.packetsniffer.clicked.connect(self.packetsniff)
+        except KeyboardInterrupt:
+            print("Exit....")
     def arpspoofer(self):
         print("Starting ARP SPOOFING")
         argument = "arp_spoofer.py"
