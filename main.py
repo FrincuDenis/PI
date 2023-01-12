@@ -1,6 +1,5 @@
 import sys
 from functools import partial
-
 from PyQt6 import uic, QtWidgets
 from PyQt6.QtCore import pyqtSlot
 from PyQt6.QtWidgets import QApplication,QMainWindow,QWidget,QMessageBox,QPushButton
