@@ -55,6 +55,32 @@ class settings(QtWidgets.QWidget):
                 """""
         else:
             QtWidgets.QMessageBox.warning(self, "Error", "Please fill the IP Address box before proceed.")
+
+class sitesettings(QtWidgets.QWidget):
+    def __init__(self,arg):
+        super().__init__()
+        uic.loadUi('sitesettingsPI.ui', self)
+        self.file= arg
+        self.run.clicked.connect(partial(self.files,self.file))
+        self.show()
+
+    @pyqtSlot()
+    def files(self,file):
+        if self.ipbox.text() != "":
+            if file=="Vulnscan.py":
+                self.name_file = "./"+ file
+                self.ip_address = self.ipbox.text()
+                self.arg1 = "-t" + self.ipbox.text()
+                subprocess.Popen([self.name_file, self.arg1])
+            elif file=="dictionary.py":
+                self.name_file = "./" + file
+                self.ip_address = self.ipbox.text()
+                self.arg1 = "-t" + self.ipbox.text()
+                subprocess.Popen([self.name_file, self.arg1])
+
+        else:
+            QtWidgets.QMessageBox.warning(self, "Error", "Please fill the SITE URL box before proceed.")
+
 class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -66,6 +92,9 @@ class UI(QtWidgets.QMainWindow):
             self.netscanner.clicked.connect(self.netscann)
             self.malware.clicked.connect(self.malware_listener)
             self.packetsniffer.clicked.connect(self.packetsniff)
+            self.arpdetect.clicked.connect(self.arp_detect)
+            self.vulnscanner.clicked.connect(self.vuln_scan)
+            self.dict.clicked.connect(self.dicte)
         except KeyboardInterrupt:
             print("Exit....")
     def arpspoofer(self):
@@ -96,6 +125,22 @@ class UI(QtWidgets.QMainWindow):
         print("Starting packet sniffer")
         self.argument = "packet_sniffer.py"
         subprocess.Popen(["python",self.argument])
+    def arp_detect(self):
+        print("Starting arp detector")
+        self.argument = "arp_detector.py"
+        subprocess.Popen(["python",self.argument])
+    def vuln_scan(self):
+        print("Starting vulnarable scanner")
+        argument = "Vulnscan.py"
+        self.settings_widget = sitesettings(argument)
+        self.settings_widget.show()
+    def dicte(self):
+        print("Starting dictionary attack")
+        argument = "dictionary.py"
+        self.settings_widget = sitesettings(argument)
+        self.settings_widget.show()
+
+
 app = QApplication(sys.argv)
 window = UI()
 window.show()
